@@ -1,42 +1,48 @@
 module adaptative_lre_comparator #(
-    parameter NB_DATA   = 8     // Ancho de bits del símbolo de entrada
+    parameter NB_DATA   = 8
 ) (
-    
-    // ---------------------------------------
-    // ---      Canal de entrada          ---
-    // ---------------------------------------
-    input  wire [NB_DATA -1:0] i_data ,
-    input  wire                i_valid,
-    input  wire                i_last , // Indica fin del bloque/paquete
+    // Outputs
+    output wire [NB_DATA -1:0] o_data      ,
+    output wire                o_valid     ,
+    output wire                o_mode      ,
+    output wire                o_start_mode,
 
-    // ---------------------------------------
-    // ---      Canal de salida            ---
-    // ---------------------------------------
-    output wire [NB_DATA -1:0] o_data , // Símbolo comprimido
-    output wire                o_valid,
-    output wire                o_mode, // 1 = run_mode | 0 = literal_mode
-    output wire                o_emit,
+    // Inputs
+    input  wire [NB_DATA -1:0] i_data      ,
+    input  wire                i_valid     ,
+    input  wire                i_last      ,
 
-    // ---------------------------------------
-    // --- Reloj y Reseteo ---
-    // ---------------------------------------
-    input  wire                i_clock,
+    // Clock and reset
+    input  wire                i_clock     ,
     input  wire                i_reset_n
 );
-
-    reg  [NB_DATA -1:0]  ref_data;
-    reg  [NB_DATA -1:0]  ref_data_d;
-    reg  [2-1:0]  valid_sr;
-    wire match_prev;
-    wire match_next;
-
-    reg mode;
-    reg emit;
+    localparam N_STAGE = 2;
 
 
-    reg mode_filter;
-    reg emit_filter;
+    // Buffer registers
+    reg  [NB_DATA -1:0] ref_data;
+    reg  [NB_DATA -1:0] ref_data_d;
+    reg  [N_STAGE -1:0] valid_sr;
 
+    // Match signals
+    wire                match_prev;
+    wire                match_next;
+
+    reg                 mode;
+    reg                 emit;
+
+
+    reg                 mode_filter;
+    reg                 emit_filter;
+
+    reg                 emit_d;
+    wire                start_run;
+    wire                start_literal;
+    wire valid;
+
+    // ---------------------------------------
+    // ---  Input Buffer                   ---
+    // ---------------------------------------
     always @(posedge i_clock or negedge i_reset_n) begin
         if (~i_reset_n) begin
             ref_data  <= 0;
@@ -49,8 +55,22 @@ module adaptative_lre_comparator #(
         end
     end
 
+    // ---------------------------------------
+    // ---  Match logic                    ---
+    // ---------------------------------------
+
     assign match_prev = (ref_data_d == ref_data);
     assign match_next = (ref_data   == i_data  );
+
+    // ---------------------------------------
+    // ---  Match decoder                  ---
+    // ---------------------------------------
+    // | match_prev | match_next | mode | emit |
+    // |------------|------------|------|------|
+    // |     0      |     0      |  0   |  0   |
+    // |     0      |     1      |  0   |  1   |
+    // |     1      |     0      |  1   |  1   |
+    // |     1      |     1      |  1   |  0   |
 
     always @(*) begin
         case ({match_prev, match_next})
@@ -87,11 +107,29 @@ module adaptative_lre_comparator #(
         end
     end
 
+    // ---------------------------------------
+    // ---  Control  Logic                 ---
+    // ---------------------------------------
 
+    always @(posedge i_clock or negedge i_reset_n) begin
+        if(~i_reset_n) begin
+            emit_d <= 0;
+        end else begin
+            emit_d <= emit_filter;
+        end
+    end
 
-    assign o_data = ref_data_d;
-    assign o_valid = valid_sr[1] & i_valid;
-    assign o_mode = mode_filter;
-    assign o_emit = emit_filter;
+    assign valid         = valid_sr[1] & i_valid;
+    assign start_run     = ~mode_filter & emit_filter & valid;
+    assign start_literal = ~mode_filter & emit_d & valid;
+
+    // ---------------------------------------
+    // ---  Output Assign                  ---
+    // ---------------------------------------
+
+    assign o_data       = ref_data_d;
+    assign o_valid      = valid;
+    assign o_mode       = start_run | mode_filter;
+    assign o_start_mode = start_run | start_literal;
 
 endmodule

@@ -1,70 +1,64 @@
 module adaptative_lre_counter #(
-    parameter NB_DATA   = 8,     // Ancho de bits del símbolo de entrada
-    parameter NB_COUNT  = 8      // Ancho de bits del contador de longitud/racha
+    parameter   NB_DATA   = 8,
+    parameter   NB_COUNT  = 8
 ) (
-    
-    // ---------------------------------------
-    // ---      Canal de entrada          ---
-    // ---------------------------------------
-    input  wire [NB_DATA -1:0] i_data ,
-    input  wire                i_valid,
-    input  wire                i_last , // Indica fin del bloque/paquete
-    input  wire                i_emit,  // Señal de corte desde el comparador
-    input  wire                i_mode,  // NUEVO: 1 = run_mode | 0 = literal_mode
+    // Output
+    output wire [NB_DATA -1:0] o_data      ,
+    output wire [NB_COUNT-1:0] o_count     ,
+    output wire                o_valid     ,
+    output wire                o_end_count ,
 
-    // ---------------------------------------
-    // ---      Canal de salida            ---
-    // ---------------------------------------
-    output wire [NB_DATA -1:0] o_data , // Símbolo emitido
-    output wire [NB_COUNT-1:0] o_count, // Longitud de la racha acumulada
-    output wire                o_valid, // Alto solo cuando se emite un paquete
-    output wire                o_emit,  // Reflejo del evento de emisión
+    //Input
+    input  wire [NB_DATA -1:0] i_data      ,
+    input  wire                i_valid     ,
+    input  wire                i_last      ,
+    input  wire                i_mode      ,
+    input  wire                i_start_mode,
 
-    // ---------------------------------------
-    // --- Reloj y Reseteo ---
-    // ---------------------------------------
-    input  wire                i_clock,
+    // Clock and reset
+    input  wire                i_clock     ,
     input  wire                i_reset_n
 );
 
     localparam N_STAGE = 2;
-    // Registros y cables internos
-    reg  signed [NB_COUNT-1:0] count;
-    wire signed [NB_COUNT-1:0] next_count;
-    wire signed [NB_COUNT-1:0] incr_sel;
-    wire                       min_count;
-    wire                       max_count;
-    wire                       limit_count;
-    wire                       emit;
 
-    wire start_run;
-    wire start_literal;
+    // Control signals
+    wire                                start_run    ;
+    wire                                start_literal;
+    wire                                start        ;
+    wire                                end_count    ;
+    reg                                 first_start  ;
 
-    // Registros de salida (para no tener lógica combinacional larga)
-    reg [N_STAGE-1:0] [NB_DATA -1:0] data_d;
-    reg [NB_COUNT-1:0] count_d;
-    reg [N_STAGE -1:0]valid_d;
-    reg                emit_d;
-    reg                emit_out;
+    // Counter signals
+    reg  signed         [NB_COUNT-1:0]  count        ;
+    wire signed         [NB_COUNT-1:0]  next_count   ;
+    wire signed         [NB_COUNT-1:0]  incr_sel     ;
+    wire                                min_count    ;
+    wire                                max_count    ;
+    wire                                limit_count  ;
 
-
-
+    // Output registers
+    reg [N_STAGE -1:0]  [NB_DATA -1:0]  data_sr      ;
+    reg [N_STAGE -1:0]                  valid_sr     ;
+    reg [NB_COUNT-1:0]                  count_d      ;
+    reg                                 end_count_d  ;
 
     // ---------------------------------------
-    // ---  Emit Logic                     ---
+    // ---  Control logic                  ---
     // ---------------------------------------
 
     always @(posedge i_clock or negedge i_reset_n) begin
-        if(~i_reset_n) begin
-            emit_d <= 0;
-        end else begin
-            emit_d <= i_emit;
+        if (~i_reset_n) begin
+            first_start <= 1'b0;
+        end else if (i_start_mode) begin
+            first_start <= 1'b1;
         end
     end
 
-    assign start_run     = ~i_mode & i_emit & i_valid;
-    assign start_literal = ~i_mode & emit_d & i_valid;
-    assign emit = (start_run | start_literal | limit_count| i_last);
+    assign start         =  first_start & i_start_mode;
+    assign start_run     = i_start_mode & i_mode      ;
+    assign start_literal = i_start_mode & ~i_mode     ;
+    assign end_count = start  | limit_count| i_last   ;
 
     // ---------------------------------------
     // ---  Count Logic                    ---
@@ -73,65 +67,53 @@ module adaptative_lre_counter #(
     assign incr_sel   = i_mode ? 1 : -1;
     assign next_count = count + incr_sel;
 
-    assign max_count = (~next_count[NB_COUNT-1]) & (&next_count[NB_COUNT-2:0]);
-    assign min_count =  (next_count[NB_COUNT-1]) & (~(|next_count[NB_COUNT-2:0]));
+    assign max_count   =  (~next_count[NB_COUNT-1]) & (&next_count[NB_COUNT-2:0]);
+    assign min_count   =  ( next_count[NB_COUNT-1]) & (~(|next_count[NB_COUNT-2:0]));
     assign limit_count = i_valid & (max_count | min_count);
 
     always @(posedge i_clock or negedge i_reset_n) begin
         if (~i_reset_n) begin
             count <= 0;
         end else if (start_run) begin
-            count <= 1; 
+            count <= 1;
         end else if(start_literal) begin
-            count <= -1; 
+            count <= -1;
         end else if(i_valid)begin
             count <= next_count;
         end
     end
 
     // ---------------------------------------
-    // ---  Output Assign Logic            ---
-    // --------------------------------------- 
-    
-    // Registramos la salida para alinearla con el reloj y evitar glitches
-    always @(posedge i_clock or negedge i_reset_n) begin
-        if (~i_reset_n) begin
-            valid_d <= 0;
-        end else begin
-            valid_d[0] <= i_valid;
-            valid_d[1] <= valid_d[0];
-        end 
-    end
+    // ---  Output Registers               ---
+    // ---------------------------------------
 
     always @(posedge i_clock or negedge i_reset_n) begin
         if (~i_reset_n) begin
             count_d <= 0;
-        end if (emit) begin
+        end if (end_count) begin
             count_d <= count;
         end
     end
 
     always @(posedge i_clock or negedge i_reset_n) begin
         if (~i_reset_n) begin
-            data_d  <= 0;
+            data_sr     <= 0;
+            valid_sr    <= 0;
+            end_count_d <= 0;
         end if(i_valid) begin
-            data_d[0]  <= i_data;
-            data_d[1]  <= data_d[0];
+            data_sr     <= {data_sr[0] , i_data};
+            valid_sr    <= {valid_sr[0],   1'b1};
+            end_count_d <= end_count;
         end
     end
 
-    always @(posedge i_clock or negedge i_reset_n) begin
-        if (~i_reset_n) begin
-            emit_out  <= 0;
-        end begin
-            emit_out  <= emit;
-        end
-    end
+    // ---------------------------------------
+    // ---  Output Assign                  ---
+    // ---------------------------------------
 
-    // Asignación final a los puertos
-    assign o_data  = data_d[1];
-    assign o_count = count_d;
-    assign o_valid = valid_d[1];
-    assign o_emit  = emit_out;
+    assign o_data       = data_sr[1];
+    assign o_count      = count_d;
+    assign o_valid      = valid_sr[1] &  i_valid;
+    assign o_end_count  = end_count_d & i_valid;
 
 endmodule

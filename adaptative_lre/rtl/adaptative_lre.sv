@@ -50,7 +50,7 @@ module adaptive_lre #(
         .o_data        (comp_data),
         .o_valid       (comp_valid),
         .o_mode        (comp_mode),
-        .o_emit        (comp_emit),
+        .o_start_mode  (comp_start_mode),
         .i_clock       (i_clock),
         .i_reset_n     (i_reset_n)
     );
@@ -63,12 +63,12 @@ module adaptive_lre #(
         .i_data    (comp_data),
         .i_valid   (comp_valid),
         .i_last    (i_last),
-        .i_emit    (comp_emit), // Conectado al comparador
         .i_mode    (comp_mode), // Conectado al comparador
+        .i_start_mode (comp_start_mode), // Conectado al comparador
         .o_data    (),
         .o_count   (),
         .o_valid   (),
-        .o_emit    (),
+        .o_end_count    (),
         .i_clock   (i_clock),
         .i_reset_n (i_reset_n)
     );
