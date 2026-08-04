@@ -20,25 +20,19 @@ module adaptative_lre_comparator #(
 
 
     // Buffer registers
-    reg  [NB_DATA -1:0] ref_data;
+    reg  [NB_DATA -1:0] ref_data  ;
     reg  [NB_DATA -1:0] ref_data_d;
-    reg  [N_STAGE -1:0] valid_sr;
+    reg  [N_STAGE -1:0] valid_sr  ;
 
     // Match signals
     wire                match_prev;
     wire                match_next;
 
-    reg                 mode;
-    reg                 emit;
-
-
-    reg                 mode_filter;
-    reg                 emit_filter;
-
-    reg                 emit_d;
-    wire                start_run;
-    wire                start_literal;
-    wire valid;
+    // Decoder signals
+    reg                 mode      ;
+    reg                 emit      ;
+    reg                 emit_d    ;
+    wire                valid     ;
 
     // ---------------------------------------
     // ---  Input Buffer                   ---
@@ -71,65 +65,35 @@ module adaptative_lre_comparator #(
     // |     0      |     1      |  0   |  1   |
     // |     1      |     0      |  1   |  1   |
     // |     1      |     1      |  1   |  0   |
-
-    always @(*) begin
-        case ({match_prev, match_next})
-            2'b11: begin
-                mode = 1'b1;
-                emit = 1'b0;
-            end
-            2'b10: begin
-                mode = 1'b1;
-                emit = 1'b1;
-            end
-            2'b01: begin
-                mode = 1'b0;
-                emit = 1'b1;
-            end
-            2'b00: begin
-                mode = 1'b0;
-                emit = 1'b0;
-            end
-            default: begin
-                mode = 1'b0;
-                emit = 1'b0;
-            end
-        endcase
-    end
+    // emit = match_prev XOR match_next
+    // mode = match_prev
 
     always @(posedge i_clock or negedge i_reset_n) begin
         if (~i_reset_n) begin
-            mode_filter <= 0;
-            emit_filter <= 0;
-        end else if(i_valid) begin
-            mode_filter <= mode;
-            emit_filter <= emit;
+            mode        <= 1'b0;
+            emit        <= 1'b0;
+        end else if (i_valid) begin
+            mode        <= match_prev; 
+            emit        <= match_prev ^ match_next; 
         end
     end
-
-    // ---------------------------------------
-    // ---  Control  Logic                 ---
-    // ---------------------------------------
 
     always @(posedge i_clock or negedge i_reset_n) begin
         if(~i_reset_n) begin
             emit_d <= 0;
         end else begin
-            emit_d <= emit_filter;
+            emit_d <= emit;
         end
     end
-
-    assign valid         = valid_sr[1] & i_valid;
-    assign start_run     = ~mode_filter & emit_filter & valid;
-    assign start_literal = ~mode_filter & emit_d & valid;
 
     // ---------------------------------------
     // ---  Output Assign                  ---
     // ---------------------------------------
+    assign valid         = valid_sr[1] & i_valid;
 
-    assign o_data       = ref_data_d;
-    assign o_valid      = valid;
-    assign o_mode       = start_run | mode_filter;
-    assign o_start_mode = start_run | start_literal;
+    assign o_data       = ref_data_d                      ;
+    assign o_valid      = valid                           ;
+    assign o_mode       = mode | (emit & valid)           ;
+    assign o_start_mode = ~mode  & (emit | emit_d) & valid;
 
 endmodule
