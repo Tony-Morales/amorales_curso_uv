@@ -5,7 +5,7 @@ module adaptative_lre_comparator #(
     output wire [NB_DATA -1:0] o_data      ,
     output wire                o_valid     ,
     output wire                o_mode      ,
-    output wire                o_start_mode,
+    output wire                o_start     ,
 
     // Inputs
     input  wire [NB_DATA -1:0] i_data      ,
@@ -30,8 +30,8 @@ module adaptative_lre_comparator #(
 
     // Decoder signals
     reg                 mode      ;
-    reg                 emit      ;
-    reg                 emit_d    ;
+    reg                 start     ;
+    reg                 start_d    ;
     wire                valid     ;
 
     // ---------------------------------------
@@ -59,41 +59,41 @@ module adaptative_lre_comparator #(
     // ---------------------------------------
     // ---  Match decoder                  ---
     // ---------------------------------------
-    // | match_prev | match_next | mode | emit |
+    // | match_prev | match_next | mode | start|
     // |------------|------------|------|------|
     // |     0      |     0      |  0   |  0   |
     // |     0      |     1      |  0   |  1   |
     // |     1      |     0      |  1   |  1   |
     // |     1      |     1      |  1   |  0   |
-    // emit = match_prev XOR match_next
+    // start= match_prev XOR match_next
     // mode = match_prev
 
     always @(posedge i_clock or negedge i_reset_n) begin
         if (~i_reset_n) begin
             mode        <= 1'b0;
-            emit        <= 1'b0;
+            start       <= 1'b0;
         end else if (i_valid) begin
             mode        <= match_prev; 
-            emit        <= match_prev ^ match_next; 
+            start       <= match_prev ^ match_next; 
         end
     end
 
     always @(posedge i_clock or negedge i_reset_n) begin
         if(~i_reset_n) begin
-            emit_d <= 0;
+            start_d <= 0;
         end else begin
-            emit_d <= emit;
+            start_d <= start;
         end
     end
 
     // ---------------------------------------
     // ---  Output Assign                  ---
     // ---------------------------------------
-    assign valid         = valid_sr[1] & i_valid;
+    assign valid   = valid_sr[1] & i_valid;
 
-    assign o_data       = ref_data_d                      ;
-    assign o_valid      = valid                           ;
-    assign o_mode       = mode | (emit & valid)           ;
-    assign o_start_mode = ~mode  & (emit | emit_d) & valid;
+    assign o_data  = ref_data_d                      ;
+    assign o_valid = valid                           ;
+    assign o_mode  = mode | (start& valid)           ;
+    assign o_start = ~mode  & (start| start_d) & valid;
 
 endmodule
