@@ -31,7 +31,7 @@ module adaptative_lre_comparator #(
     // Decoder signals
     reg                 mode      ;
     reg                 start     ;
-    reg                 start_d    ;
+    reg                 start_d   ;
     wire                valid     ;
 
     // ---------------------------------------
