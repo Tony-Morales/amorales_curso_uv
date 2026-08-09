@@ -6,11 +6,13 @@ module adaptative_lre_encoder_fsm #(
     output wire         o_rd_count    ,
     output wire         o_rd_data     ,
     output wire         o_reset_count ,
+    output wire         o_last        ,
 
 
     input  wire         i_fifo_empty  ,
     input  wire         i_mode        ,
     input  wire         i_count_reach ,
+    input  wire         i_last        ,
 
     input  wire         i_clock       ,
     input  wire         i_reset_n
@@ -26,13 +28,29 @@ module adaptative_lre_encoder_fsm #(
         STATE_CHECK_FIFO  = 5
      } fsm_state_t;
 
-    fsm_state_t state;
-    fsm_state_t next_state;
+    fsm_state_t state      ;
+    fsm_state_t next_state ;
 
-    reg rd_data;
-    reg rd_count;
-    reg reset_count;
-    reg data_sel;
+    reg         rd_data    ;
+    reg         rd_count   ;
+    reg         reset_count;
+    reg         data_sel   ;
+
+    reg         last_flag  ;
+    wire        last       ;
+
+    // ---------------------------------------
+    // ---  Last control                   ---
+    // ---------------------------------------
+    assign last = next_state == STATE_CHECK_FIFO & i_fifo_empty & last_flag;
+
+    always @(posedge i_clock or negedge i_reset_n) begin
+        if (~i_reset_n | last) begin
+            last_flag  <= 1'b0;
+        end else if (i_last) begin
+            last_flag  <= 1'b1;
+        end
+    end
 
     //-----------------------------------------
     //---  State register                   ---
@@ -161,5 +179,6 @@ module adaptative_lre_encoder_fsm #(
     assign o_rd_data     = rd_data    ;
     assign o_reset_count = reset_count;
     assign o_data_sel    = data_sel   ;
+    assign o_last        = last       ;
 
 endmodule

@@ -5,7 +5,8 @@ module adaptative_lre_encoder #(
     // Output
     output wire [NB_DATA -1:0] o_data          ,
     output wire                o_valid         ,
-    output wire [NB_COUNT-1:0] o_start         ,
+    output wire                o_start         ,
+    output wire                o_last          ,
 
     // FIFO control
     output wire                o_fifo_data_rd  ,
@@ -15,6 +16,8 @@ module adaptative_lre_encoder #(
     // FIFO data
     input wire [NB_DATA -1:0] i_data           ,
     input wire [NB_COUNT-1:0] i_marker         ,
+
+    input wire                i_last           ,
 
     // Clock and reset
     input  wire                i_clock         ,
@@ -38,6 +41,7 @@ module adaptative_lre_encoder #(
     wire                        rd_data        ;
     wire                        reset_count    ;
     wire                        count_reach    ;
+    wire                        fsm_last       ;
 
 
     // ---------------------------------------
@@ -93,9 +97,11 @@ module adaptative_lre_encoder #(
         .o_rd_count              (rd_count     ),
         .o_rd_data               (rd_data      ),
         .o_reset_count           (reset_count  ),
+        .o_last                  (fsm_last     ),
         .i_fifo_empty            (i_fifo_empty ),
         .i_mode                  (mode         ),
         .i_count_reach           (count_reach  ),
+        .i_last                  (i_last       ),
         .i_clock                 (i_clock      ),
         .i_reset_n               (i_reset_n    )
     );
@@ -115,5 +121,6 @@ assign o_valid          = valid;
 assign o_start          = valid & data_sel;
 assign o_fifo_marker_rd = rd_count;
 assign o_fifo_data_rd   = rd_data;
+assign o_last           = fsm_last;
 
 endmodule

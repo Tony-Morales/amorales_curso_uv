@@ -7,6 +7,7 @@ module adaptative_lre_counter #(
     output wire [NB_COUNT-1:0] o_marker      ,
     output wire                o_valid       ,
     output wire                o_marker_valid,
+    output wire                o_last        ,
 
     // Input
     input  wire [NB_DATA -1:0] i_data        ,
@@ -45,23 +46,45 @@ module adaptative_lre_counter #(
     reg                                 filter_valid ;
     wire                                valid_sel    ;
 
+    // Control signals
+    reg  [N_STAGE -1:0]                 last_sr      ;
+    reg                                 last_ext     ;
+    wire                                last_filter  ;
+    wire                                valid_ext    ;
 
     // ---------------------------------------
-    // ---  Control logic                  ---
+    // ---  Last control                   ---
     // ---------------------------------------
+    assign last_filter = i_last & i_valid;
 
     always @(posedge i_clock or negedge i_reset_n) begin
         if (~i_reset_n) begin
+            last_sr <= 0;
+        end else begin
+            last_sr <= {last_sr[0], last_filter };
+        end
+    end
+
+    assign last_ext  = |last_sr;
+    assign valid_ext =  i_valid | last_ext;
+
+
+    // ---------------------------------------
+    // ---  Start logic                    ---
+    // ---------------------------------------
+
+    always @(posedge i_clock or negedge i_reset_n) begin
+        if (~i_reset_n | last_sr[1]) begin
             first_start <= 1'b0;
         end else if (i_start     ) begin
             first_start <= 1'b1;
-        end
+        end 
     end
 
     assign start         =  first_start & i_start     ;
     assign start_run     = i_start      & i_mode      ;
     assign start_literal = i_start      & ~i_mode     ;
-    assign end_count = start  | limit_count| i_last   ;
+    assign end_count     = start  | limit_count | last_sr[0] ;
 
     // ---------------------------------------
     // ---  Count Logic                    ---
@@ -72,7 +95,7 @@ module adaptative_lre_counter #(
 
     assign max_count   =  (~next_count[NB_COUNT-1]) & (&next_count[NB_COUNT-2:0]);
     assign min_count   =  ( next_count[NB_COUNT-1]) & (~(|next_count[NB_COUNT-2:0]));
-    assign limit_count = i_valid & (max_count | min_count);
+    assign limit_count = valid_ext & (max_count | min_count);
 
     always @(posedge i_clock or negedge i_reset_n) begin
         if (~i_reset_n) begin
@@ -81,7 +104,7 @@ module adaptative_lre_counter #(
             count <= 1;
         end else if(start_literal) begin
             count <= -1;
-        end else if(i_valid)begin
+        end else if(valid_ext)begin
             count <= next_count;
         end
     end
@@ -95,7 +118,7 @@ module adaptative_lre_counter #(
             data_sr     <= 0;
             valid_sr    <= 0;
             end_count_d <= 0;
-        end if(i_valid) begin
+        end if(valid_ext) begin
             data_sr     <= {data_sr[0] , i_data};
             valid_sr    <= {valid_sr[0],   1'b1};
             end_count_d <= end_count;
@@ -123,9 +146,10 @@ module adaptative_lre_counter #(
     // ---------------------------------------
     assign valid_sel      = filter_valid? end_count_d : valid_sr[1];
 
-    assign o_data         = data_sr[1]           ;
-    assign o_marker       = count_d              ;
-    assign o_valid        = valid_sel & i_valid  ;
-    assign o_marker_valid = end_count_d & i_valid;
+    assign o_data         = data_sr[1]             ;
+    assign o_marker       = count_d                ;
+    assign o_valid        = valid_sel & valid_ext  ;
+    assign o_marker_valid = end_count_d & valid_ext;
+    assign o_last         = last_sr[1]             ;
 
 endmodule

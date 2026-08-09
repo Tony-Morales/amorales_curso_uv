@@ -34,12 +34,14 @@ module adaptive_lre #(
     wire [NB_DATA -1:0] comp_data           ;
     wire                comp_valid          ;
     wire                comp_mode           ;
+    wire                comp_last           ;
 
     // Counter
     wire [NB_DATA -1:0] counter_data        ;
     wire                counter_data_valid  ;
     wire [NB_COUNT-1:0] counter_marker      ;
     wire                counter_marker_valid;
+    wire                counter_last        ;
 
     // Fifo data 
     wire [NB_DATA -1:0] fifo_data           ;
@@ -51,7 +53,6 @@ module adaptive_lre #(
     wire [NB_COUNT-1:0] fifo_marker         ;
 
 
-
     adaptative_lre_comparator #(
         .NB_DATA               (NB_DATA                  )
     ) 
@@ -61,6 +62,7 @@ module adaptive_lre #(
         .o_valid               (comp_valid               ),
         .o_mode                (comp_mode                ),
         .o_start               (comp_start               ),
+        .o_last                (comp_last                ),
         .i_data                (i_data                   ),
         .i_valid               (i_valid                  ),
         .i_last                (i_last                   ),
@@ -78,9 +80,10 @@ module adaptive_lre #(
         .o_marker              (counter_marker           ),
         .o_valid               (counter_data_valid       ),
         .o_marker_valid        (counter_marker_valid     ),
+        .o_last                (counter_last             ),
         .i_data                (comp_data                ),
         .i_valid               (comp_valid               ),
-        .i_last                (i_last                   ),
+        .i_last                (comp_last                ),
         .i_mode                (comp_mode                ),
         .i_start               (comp_start               ),
         .i_clock               (i_clock                  ),
@@ -133,11 +136,13 @@ module adaptive_lre #(
         .o_data                (                         ),
         .o_valid               (                         ),
         .o_start               (                         ),
+        .o_last                (                         ),
         .o_fifo_data_rd        (fifo_data_rd             ),
         .o_fifo_marker_rd      (fifo_marker_rd           ),
         .i_fifo_empty          (fifo_marker_empty        ),
         .i_data                (fifo_data                ),
         .i_marker              (fifo_marker              ),
+        .i_last                (counter_last             ),
         .i_clock               (i_clock                  ),
         .i_reset_n             (i_reset_n                )
     );

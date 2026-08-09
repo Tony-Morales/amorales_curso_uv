@@ -6,6 +6,7 @@ module adaptative_lre_comparator #(
     output wire                o_valid     ,
     output wire                o_mode      ,
     output wire                o_start     ,
+    output wire                o_last      ,
 
     // Inputs
     input  wire [NB_DATA -1:0] i_data      ,
@@ -34,6 +35,29 @@ module adaptative_lre_comparator #(
     reg                 start_d   ;
     wire                valid     ;
 
+    // Control signals
+    reg  [N_STAGE -1:0] last_sr    ;
+    reg                 last_ext   ;
+    wire                last_filter;
+    wire                valid_ext  ;
+
+
+    // ---------------------------------------
+    // ---  Last control                   ---
+    // ---------------------------------------
+    assign last_filter = i_last & i_valid;
+
+    always @(posedge i_clock or negedge i_reset_n) begin
+        if (~i_reset_n) begin
+            last_sr <= 0;
+        end else begin
+            last_sr <= {last_sr[0], last_filter };
+        end
+    end
+
+    assign last_ext  = |last_sr;
+    assign valid_ext =  i_valid | last_ext;
+
     // ---------------------------------------
     // ---  Input Buffer                   ---
     // ---------------------------------------
@@ -42,7 +66,7 @@ module adaptative_lre_comparator #(
             ref_data  <= 0;
             ref_data_d <= 0;
             valid_sr <= 0;
-        end else if (i_valid) begin
+        end else if (valid_ext) begin
             ref_data  <= i_data;
             ref_data_d <= ref_data;
             valid_sr <= {valid_sr[0], 1'b1};
@@ -72,7 +96,7 @@ module adaptative_lre_comparator #(
         if (~i_reset_n) begin
             mode        <= 1'b0;
             start       <= 1'b0;
-        end else if (i_valid) begin
+        end else if (valid_ext) begin
             mode        <= match_prev; 
             start       <= match_prev ^ match_next; 
         end
@@ -89,11 +113,12 @@ module adaptative_lre_comparator #(
     // ---------------------------------------
     // ---  Output Assign                  ---
     // ---------------------------------------
-    assign valid   = valid_sr[1] & i_valid;
+    assign valid   = valid_sr[1] & valid_ext;
 
     assign o_data  = ref_data_d                      ;
     assign o_valid = valid                           ;
     assign o_mode  = mode | (start& valid)           ;
-    assign o_start = ~mode  & (start| start_d) & valid;
+    assign o_start = ~mode & (start| start_d) & valid;
+    assign o_last  = last_sr[1]                      ;
 
 endmodule
