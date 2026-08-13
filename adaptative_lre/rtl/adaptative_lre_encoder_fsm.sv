@@ -85,7 +85,11 @@ module adaptative_lre_encoder_fsm #(
                 if (i_mode) begin
                     next_state = STATE_SEND_RUN;
                 end else begin
-                    next_state = STATE_SEND_LIT;
+                    if(i_count_reach) begin
+                        next_state = STATE_CHECK_FIFO;
+                    end else begin
+                        next_state = STATE_SEND_LIT;
+                    end
                 end
             end
             

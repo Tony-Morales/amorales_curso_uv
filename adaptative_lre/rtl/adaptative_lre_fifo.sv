@@ -22,15 +22,16 @@ module adaptative_lre_fifo #(
 
     // memory and pointer signals
     reg [NB_DATA   -1:0]    mem [0:DEPTH-1];
-    reg [NB_POINTER-1:0]    wr_ptr;
-    reg [NB_POINTER-1:0]    rd_ptr;
-    reg [NB_POINTER  :0]    level;
+    reg [NB_POINTER-1:0]    wr_ptr         ;
+    reg [NB_POINTER-1:0]    rd_ptr         ;
+    reg [NB_POINTER  :0]    level          ;
 
     // Control signals
-    wire                    wr_en;
-    wire                    rd_en;
-    wire                    full;
-    wire                    empty;
+    wire                    wr_en          ;
+    wire                    rd_en          ;
+    wire                    full           ;
+    wire                    empty          ;
+    wire                    overflow       ;
 
     // ---------------------------------------
     // ---  Control logic                  ---
@@ -50,9 +51,10 @@ module adaptative_lre_fifo #(
 
     assign empty = (level == 0);
     assign full  = (level == DEPTH);
+    assign overflow = i_wr_valid & full;
 
-    assign wr_en = i_wr_valid & ~o_full;
-    assign rd_en = i_rd_valid & ~o_empty;
+    assign wr_en = i_wr_valid & ~full;
+    assign rd_en = i_rd_valid & ~empty;
 
     // ---------------------------------------
     // ---   Pointer Logic                 ---
@@ -88,9 +90,9 @@ module adaptative_lre_fifo #(
     // ---  Output Assign                  ---
     // ---------------------------------------
 
-    assign o_rd_data = mem[rd_ptr];
-    assign o_level   = level      ;
-    assign o_empty   = empty      ;
-    assign o_full    = full       ;
+    assign o_rd_data  = mem[rd_ptr];
+    assign o_level    = level      ;
+    assign o_empty    = empty      ;
+    assign o_full     = full       ;
 
 endmodule

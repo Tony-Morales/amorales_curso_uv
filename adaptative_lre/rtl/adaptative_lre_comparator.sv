@@ -69,7 +69,7 @@ module adaptative_lre_comparator #(
         end else if (valid_ext) begin
             ref_data  <= i_data;
             ref_data_d <= ref_data;
-            valid_sr <= {valid_sr[0], 1'b1};
+            valid_sr <= {valid_sr[0],1'b1};
         end
     end
 
@@ -96,7 +96,7 @@ module adaptative_lre_comparator #(
         if (~i_reset_n) begin
             mode        <= 1'b0;
             start       <= 1'b0;
-        end else if (valid_ext) begin
+        end else if (valid_ext & ~last_sr[1]) begin
             mode        <= match_prev; 
             start       <= match_prev ^ match_next; 
         end
@@ -105,7 +105,7 @@ module adaptative_lre_comparator #(
     always @(posedge i_clock or negedge i_reset_n) begin
         if(~i_reset_n) begin
             start_d <= 0;
-        end else begin
+        end else if (valid_ext & ~last_sr[1])begin
             start_d <= start;
         end
     end
@@ -117,7 +117,7 @@ module adaptative_lre_comparator #(
 
     assign o_data  = ref_data_d                      ;
     assign o_valid = valid                           ;
-    assign o_mode  = mode | (start& valid)           ;
+    assign o_mode  = mode | (start & valid)          ;
     assign o_start = ~mode & (start| start_d) & valid;
     assign o_last  = last_sr[1]                      ;
 

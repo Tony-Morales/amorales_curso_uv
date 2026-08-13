@@ -73,7 +73,7 @@ module adaptative_lre_encoder #(
     // ---------------------------------------
 
     assign next_word_count = word_count + 1;
-    assign count_reach = next_word_count == marker_abs[NB_COUNT-1:0];
+    assign count_reach = next_word_count >= marker_abs[NB_COUNT-1:0];
 
     always @(posedge i_clock or negedge i_reset_n) begin
         if(i_reset_n == 1'b0 | reset_count) begin
@@ -116,7 +116,8 @@ module adaptative_lre_encoder #(
     end
 
 
-assign o_data           = data_sel? marker_d : data_d ;
+// assign o_data           = data_sel? marker_d : data_d ;
+assign o_data           = data_sel? {{(NB_DATA - NB_COUNT)  {marker_d[NB_COUNT-1]}}, marker_d} : data_d ;
 assign o_valid          = valid;
 assign o_start          = valid & data_sel;
 assign o_fifo_marker_rd = rd_count;

@@ -100,9 +100,9 @@ module adaptative_lre_counter #(
     always @(posedge i_clock or negedge i_reset_n) begin
         if (~i_reset_n) begin
             count <= 0;
-        end else if (start_run) begin
+        end else if (start_run | (max_count & valid_ext)) begin
             count <= 1;
-        end else if(start_literal) begin
+        end else if(start_literal | (min_count & valid_ext)) begin
             count <= -1;
         end else if(valid_ext)begin
             count <= next_count;
@@ -136,7 +136,7 @@ module adaptative_lre_counter #(
     always @(posedge i_clock or negedge i_reset_n) begin
         if (~i_reset_n) begin
             filter_valid <= 0;
-        end else if (end_count_d) begin
+        end else if (end_count_d | (i_start & (~first_start))) begin
             filter_valid <= i_mode;
         end
     end
