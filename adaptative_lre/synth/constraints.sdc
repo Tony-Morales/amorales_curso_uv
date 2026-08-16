@@ -1,4 +1,4 @@
-create_clock -name i_clock -period 50 -waveform {0 1} [get_ports "i_clock"]
+create_clock -name i_clock -period 5 -waveform {0 1} [get_ports "i_clock"]
 
 set_clock_transition -rise 0.1 [get_clocks "i_clock"]
 set_clock_transition -fall 0.1 [get_clocks "i_clock"]

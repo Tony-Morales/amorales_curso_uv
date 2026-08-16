@@ -62,7 +62,7 @@ module tb_adaptive_rle;
     integer               decode_count = 0;
     integer               i;
 
-
+integer counter_bad =0;
     // ---------------------------------------
     // ---  TOP                            ---
     // ---------------------------------------
@@ -242,6 +242,12 @@ module tb_adaptive_rle;
                 end else begin
                     $display("Error");
                 end
+            end
+        end else begin
+            counter_bad ++;
+            if(counter_bad >= 1000) begin
+                $display("dut_valid = %b |  tb_i_ready = %b", dut_valid, tb_i_ready);
+                counter_bad = 0;
             end
         end
     end
