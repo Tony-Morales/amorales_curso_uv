@@ -1,4 +1,4 @@
-module adaptative_lre_counter #(
+module adaptive_lre_counter #(
     parameter   NB_DATA   = 8,
     parameter   NB_COUNT  = 8
 ) (

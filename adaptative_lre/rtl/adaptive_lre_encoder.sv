@@ -1,4 +1,4 @@
-module adaptative_lre_encoder #(
+module adaptive_lre_encoder #(
     parameter NB_DATA  = 8,
     parameter NB_COUNT = 8
 )  (
@@ -87,7 +87,7 @@ module adaptative_lre_encoder #(
     // ---  FSM                            ---
     // ---------------------------------------
 
-    adaptative_lre_encoder_fsm
+    adaptive_lre_encoder_fsm
     #(
         .NB_DATA                 (NB_DATA      ),
         .NB_COUNT                (NB_COUNT     )

@@ -1,4 +1,4 @@
-module adaptative_lre_encoder_fsm #(
+module adaptive_lre_encoder_fsm #(
     parameter NB_DATA  = 8,
     parameter NB_COUNT = 8
 )  (

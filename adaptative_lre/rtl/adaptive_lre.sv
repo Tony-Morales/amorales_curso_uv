@@ -44,7 +44,7 @@ module adaptive_lre #(
     // Fifo data 
     wire [NB_DATA -1:0] fifo_data           ;
     wire                fifo_data_rd        ;
-    wire                fifo_data_full       ;
+    wire                fifo_data_full      ;
 
     // Fifo marker
     wire [NB_COUNT-1:0] fifo_marker         ;
@@ -58,7 +58,7 @@ module adaptive_lre #(
     wire                encoder_start         ;
     wire                encoder_last          ;
 
-    adaptative_lre_comparator #(
+    adaptive_lre_comparator #(
         .NB_DATA               (NB_DATA                  )
     ) 
     u_comparator 
@@ -76,7 +76,7 @@ module adaptive_lre #(
     );
 
 
-    adaptative_lre_counter #   (
+    adaptive_lre_counter #   (
         .NB_DATA               (NB_DATA                  ),
         .NB_COUNT              (NB_COUNT                 )
     ) 
@@ -96,7 +96,7 @@ module adaptive_lre #(
     );
 
 
-    adaptative_lre_fifo 
+    adaptive_lre_fifo 
     #                          (
         .NB_DATA               (NB_DATA                  ),
         .NB_POINTER            (NB_FIFO_POINTER          )
@@ -114,7 +114,7 @@ module adaptive_lre #(
     );
 
 
-    adaptative_lre_fifo 
+    adaptive_lre_fifo 
     #(
         .NB_DATA               (NB_COUNT                 ),
         .NB_POINTER            (NB_FIFO_POINTER -2       )
@@ -132,7 +132,7 @@ module adaptive_lre #(
     );
 
 
-    adaptative_lre_encoder 
+    adaptive_lre_encoder 
     #(
         .NB_DATA               (NB_DATA                  ),
         .NB_COUNT              (NB_COUNT                 )

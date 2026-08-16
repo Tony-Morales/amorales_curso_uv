@@ -1,4 +1,4 @@
-module adaptative_lre_comparator #(
+module adaptive_lre_comparator #(
     parameter NB_DATA   = 8
 ) (
     // Outputs
