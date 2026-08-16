@@ -29,21 +29,23 @@ def generate_test_file():
                 # --- RUN MODE ---
                 length = MAX_RUN_LENGTH
                 byte_val = random.randint(0, MAX_DATA_VAL)
-                
-                for _ in range(length):
-                    f.write(f"{byte_val:02X}\n")
+                line_str  = f"{byte_val:02X}\n"
+                f.write(line_str * length)
+
             else:
                 # --- LITERAL MODE ---
                 length = MAX_LIT_LENGTH
                 prev_byte = -1
+                lines = []
                 
                 for _ in range(length):
                     byte_val = random.randint(0, MAX_DATA_VAL)
                     while byte_val == prev_byte:
                         byte_val = random.randint(0, MAX_DATA_VAL)
 
-                    f.write(f"{byte_val:02X}\n")
+                    lines.append(f"{byte_val:02X}\n")
                     prev_byte = byte_val
+                f.write(''.join(lines))
 
     print(f"==================================================")
     print(f" File '{FILENAME}' successfully generated.")

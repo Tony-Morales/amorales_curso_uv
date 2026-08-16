@@ -2,6 +2,8 @@
 
 rm -rf ../tb/vectors
 
+mkdir ../tb/vectors
+
 # NB_DATA = 8 NB_COUNT = 8
 python3 gen_random_vector.py    8 8
 python3 gen_overflow_vector.py  8 8
@@ -21,10 +23,6 @@ python3 gen_overflow_vector.py  32 8
 # NB_DATA = 32 NB_COUNT = 16
 python3 gen_random_vector.py    32 16
 python3 gen_overflow_vector.py  32 16
-
-# NB_DATA = 32 NB_COUNT = 32
-python3 gen_random_vector.py    32 32
-python3 gen_overflow_vector.py  32 32
 
 #Vectors from img
 python3 gen_img_vector.py hand_rx.jpg
