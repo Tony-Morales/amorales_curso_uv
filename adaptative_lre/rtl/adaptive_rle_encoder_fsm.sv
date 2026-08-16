@@ -1,4 +1,4 @@
-module adaptive_lre_encoder_fsm #(
+module adaptive_rle_encoder_fsm #(
     parameter NB_DATA  = 8,
     parameter NB_COUNT = 8
 )  (
@@ -45,7 +45,9 @@ module adaptive_lre_encoder_fsm #(
     assign last = next_state == STATE_CHECK_FIFO & i_fifo_empty & last_flag;
 
     always @(posedge i_clock or negedge i_reset_n) begin
-        if (~i_reset_n | last) begin
+        if (~i_reset_n) begin
+            last_flag  <= 1'b0;
+        end else if(last) begin
             last_flag  <= 1'b0;
         end else if (i_last) begin
             last_flag  <= 1'b1;

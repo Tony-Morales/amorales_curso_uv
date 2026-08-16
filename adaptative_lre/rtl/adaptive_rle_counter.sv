@@ -1,4 +1,4 @@
-module adaptive_lre_counter #(
+module adaptive_rle_counter #(
     parameter   NB_DATA   = 8,
     parameter   NB_COUNT  = 8
 ) (
@@ -74,7 +74,9 @@ module adaptive_lre_counter #(
     // ---------------------------------------
 
     always @(posedge i_clock or negedge i_reset_n) begin
-        if (~i_reset_n | last_sr[1]) begin
+        if (~i_reset_n ) begin
+            first_start <= 1'b0;
+        end else if(last_sr[1]) begin
             first_start <= 1'b0;
         end else if (i_start     ) begin
             first_start <= 1'b1;
@@ -118,7 +120,7 @@ module adaptive_lre_counter #(
             data_sr     <= 0;
             valid_sr    <= 0;
             end_count_d <= 0;
-        end if(valid_ext) begin
+        end else if(valid_ext) begin
             data_sr     <= {data_sr[0] , i_data};
             valid_sr    <= {valid_sr[0],   1'b1};
             end_count_d <= end_count;
@@ -128,7 +130,7 @@ module adaptive_lre_counter #(
     always @(posedge i_clock or negedge i_reset_n) begin
         if (~i_reset_n) begin
             count_d <= 0;
-        end if (end_count) begin
+    end else if (end_count) begin
             count_d <= count;
         end
     end

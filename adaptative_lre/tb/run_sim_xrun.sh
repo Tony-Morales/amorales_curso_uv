@@ -10,17 +10,17 @@ NB_DATA=${2:-8}
 NB_COUNT=${3:-8}
 
 # File and Top Module Definitions
-TB_TOP="tb_adaptive_lre"
+TB_TOP="tb_adaptive_rle"
 SIM_DIR="sim_build_xrun/$TEST_NAME"
 TIMESCALE="1ns/1ps"
 
 RTL_FILES=(
-    "adaptive_lre_encoder.sv"
-    "adaptive_lre_encoder_fsm.sv"
-    "adaptive_lre_fifo.sv"
-    "adaptive_lre_counter.sv"
-    "adaptive_lre_comparator.sv"
-    "adaptive_lre.sv"
+    "adaptive_rle_encoder.sv"
+    "adaptive_rle_encoder_fsm.sv"
+    "adaptive_rle_fifo.sv"
+    "adaptive_rle_counter.sv"
+    "adaptive_rle_comparator.sv"
+    "adaptive_rle.sv"
     "../tb/tb.sv"
 )
 

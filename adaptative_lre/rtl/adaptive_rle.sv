@@ -1,5 +1,5 @@
 
-module adaptive_lre #(
+module adaptive_rle #(
     parameter NB_DATA   = 8, 
     parameter NB_COUNT  = 8     
 )(
@@ -58,7 +58,7 @@ module adaptive_lre #(
     wire                encoder_start         ;
     wire                encoder_last          ;
 
-    adaptive_lre_comparator #(
+    adaptive_rle_comparator #(
         .NB_DATA               (NB_DATA                  )
     ) 
     u_comparator 
@@ -76,7 +76,7 @@ module adaptive_lre #(
     );
 
 
-    adaptive_lre_counter #   (
+    adaptive_rle_counter #   (
         .NB_DATA               (NB_DATA                  ),
         .NB_COUNT              (NB_COUNT                 )
     ) 
@@ -96,7 +96,7 @@ module adaptive_lre #(
     );
 
 
-    adaptive_lre_fifo 
+    adaptive_rle_fifo 
     #                          (
         .NB_DATA               (NB_DATA                  ),
         .NB_POINTER            (NB_FIFO_POINTER          )
@@ -114,7 +114,7 @@ module adaptive_lre #(
     );
 
 
-    adaptive_lre_fifo 
+    adaptive_rle_fifo 
     #(
         .NB_DATA               (NB_COUNT                 ),
         .NB_POINTER            (NB_FIFO_POINTER -2       )
@@ -132,7 +132,7 @@ module adaptive_lre #(
     );
 
 
-    adaptive_lre_encoder 
+    adaptive_rle_encoder 
     #(
         .NB_DATA               (NB_DATA                  ),
         .NB_COUNT              (NB_COUNT                 )

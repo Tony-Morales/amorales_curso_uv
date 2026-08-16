@@ -6,12 +6,12 @@ set_db init_hdl_search_path ../rtl
 read_libs slow_vdd1v0_basicCells.lib
 
 # Leemos ficheros Verilog:
-read_hdl adaptive_lre_comparator.sv  -sv
-read_hdl adaptive_lre_counter.sv  -sv
-read_hdl adaptive_lre_encoder_fsm.sv  -sv
-read_hdl adaptive_lre_encoder.sv  -sv
-read_hdl adaptive_lre_fifo.sv  -sv
-read_hdl adaptive_lre.sv -sv
+read_hdl adaptive_rle_comparator.sv  -sv
+read_hdl adaptive_rle_counter.sv  -sv
+read_hdl adaptive_rle_encoder_fsm.sv  -sv
+read_hdl adaptive_rle_encoder.sv  -sv
+read_hdl adaptive_rle_fifo.sv  -sv
+read_hdl adaptive_rle.sv -sv
 
 
 # Sintetiza a rtl basico:
@@ -37,8 +37,8 @@ report_area > reports/report_area.rpt
 report_qor > reports/report_qor.rpt
 
 # Generamos Outputs para las siguientes etapas:
-write_hdl > outputs/adaptive_lre_netlist.v
-write_sdc > outputs/adaptive_lre_sintesis.sdc
+write_hdl > outputs/adaptive_rle_netlist.v
+write_sdc > outputs/adaptive_rle_sintesis.sdc
 write_sdf -timescale ns -nonegchecks -recrem split -edges check_edge -setuphold split > outputs/delays.sdf
 
 # Lanzamos el visor interactivo para ver los resultados:

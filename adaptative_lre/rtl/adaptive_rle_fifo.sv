@@ -1,4 +1,4 @@
-module adaptive_lre_fifo #(
+module adaptive_rle_fifo #(
     parameter NB_DATA    = 8,
     parameter NB_POINTER = 4 
 ) (

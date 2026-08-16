@@ -1,4 +1,4 @@
-module adaptive_lre_encoder #(
+module adaptive_rle_encoder #(
     parameter NB_DATA  = 8,
     parameter NB_COUNT = 8
 )  (
@@ -76,7 +76,9 @@ module adaptive_lre_encoder #(
     assign count_reach = next_word_count >= marker_abs[NB_COUNT-1:0];
 
     always @(posedge i_clock or negedge i_reset_n) begin
-        if(i_reset_n == 1'b0 | reset_count) begin
+        if(~i_reset_n) begin
+            word_count <= 0;
+        end else if( reset_count) begin
             word_count <= 0;
         end else if (rd_data & (~mode)) begin
             word_count <= next_word_count;
@@ -87,7 +89,7 @@ module adaptive_lre_encoder #(
     // ---  FSM                            ---
     // ---------------------------------------
 
-    adaptive_lre_encoder_fsm
+    adaptive_rle_encoder_fsm
     #(
         .NB_DATA                 (NB_DATA      ),
         .NB_COUNT                (NB_COUNT     )
@@ -108,7 +110,7 @@ module adaptive_lre_encoder #(
 
     reg valid;
     always @(posedge i_clock or negedge i_reset_n) begin
-        if(i_reset_n == 1'b0) begin
+        if(~i_reset_n) begin
             valid <= 0;
         end else begin
             valid <= rd_count | rd_data;
