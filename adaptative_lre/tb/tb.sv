@@ -6,9 +6,17 @@ module tb_adaptive_lre;
     // ---  Signals and variables          ---
     // ---------------------------------------
 
+    `ifndef DEF_NB_DATA
+        `define DEF_NB_DATA 8
+    `endif
+
+    `ifndef DEF_NB_COUNT
+        `define DEF_NB_COUNT 8
+    `endif
+
     // Parameters
-    parameter NB_DATA    = 8;
-    parameter NB_COUNT   = 8;
+    parameter NB_DATA    = `DEF_NB_DATA;
+    parameter NB_COUNT   = `DEF_NB_COUNT;
     parameter CLK_PERIOD = 10; // 10ns clock period (100 MHz)
 
     // TB clock and reset
@@ -247,6 +255,9 @@ module tb_adaptive_lre;
         tb_i_last  = 1'b0;
         tb_i_data  = {NB_DATA{1'b0}};
         tb_i_ready = 1'b1;
+
+        $display("NB_DATA : ", NB_DATA );
+        $display("NB_COUNT: ", NB_COUNT);
 
         $display("--------------------------------------------------");
         $display("---------------    Start test      ---------------");

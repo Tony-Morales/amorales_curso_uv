@@ -11,22 +11,25 @@ set -e
 TEST_NAME=${1:-input}
 TEST_FILE="${TEST_NAME}.txt"
 
+# Get args to select module parameters
+NB_DATA=${2:-8}
+NB_COUNT=${3:-8}
 
 # ******************************************************************************
 # File and Top Module Definitions
 # ******************************************************************************
 TB_TOP="tb_adaptive_lre"
-SIM_DIR="sim_build"
+SIM_DIR="sim_build/$TEST_NAME"
 TIMESCALE="1ns/1ps"
 
 # RTL and Testbench files
 RTL_FILES=(
-    "adaptative_lre_encoder.sv"
-    "adaptative_lre_encoder_fsm.sv"
-    "adaptative_lre_fifo.sv"
-    "adaptative_lre_counter.sv"
-    "adaptative_lre_comparator.sv"
-    "adaptative_lre.sv"
+    "adaptive_lre_encoder.sv"
+    "adaptive_lre_encoder_fsm.sv"
+    "adaptive_lre_fifo.sv"
+    "adaptive_lre_counter.sv"
+    "adaptive_lre_comparator.sv"
+    "adaptive_lre.sv"
     "../tb/tb.sv"
 )
 
@@ -62,7 +65,7 @@ cd ${SIM_DIR}
 
 # Compilation
 echo "Compiling sources ..."
-xvlog -sv *.sv
+xvlog -sv *.sv -d DEF_NB_DATA=${NB_DATA} -d DEF_NB_COUNT=${NB_COUNT}
 
 # Elaboration
 echo "Elaborating design ..."
