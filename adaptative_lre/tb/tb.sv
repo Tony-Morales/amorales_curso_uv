@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module tb_adaptive_lre;
+module tb_adaptive_rle;
 
     // ---------------------------------------
     // ---  Signals and variables          ---
@@ -67,7 +67,7 @@ module tb_adaptive_lre;
     // ---  TOP                            ---
     // ---------------------------------------
 
-    adaptive_lre #(
+    adaptive_rle #(
         .NB_DATA  (NB_DATA),
         .NB_COUNT (NB_COUNT)
     ) u_dut (
@@ -206,8 +206,8 @@ module tb_adaptive_lre;
             // If dut_start is 1, a marker/header is received
             $fdisplay(fd_out_raw, "%02H", dut_data);
             if(dut_start) begin
-                $display("[TB Output @ %0t ns] Marker = %0d | Start = %0b ---------------------------", 
-                    $time, $signed(dut_data), dut_start);
+                // $display("[TB Output @ %0t ns] Marker = %0d | Start = %0b ---------------------------", 
+                //     $time, $signed(dut_data), dut_start);
                 
                 decode_count = $signed(dut_data);
                 
@@ -221,8 +221,8 @@ module tb_adaptive_lre;
                 end
                 
             end else begin
-                $display("[TB Output @ %0t ns] Symbol = 0x%0H | Last = %0b", 
-                        $time, dut_data, dut_last);
+                // $display("[TB Output @ %0t ns] Symbol = 0x%0H | Last = %0b", 
+                //         $time, dut_data, dut_last);
                 
                 // Run mode: Repeat symbol
                 if (decode_state == STATE_WAIT_RUN) begin
@@ -274,6 +274,9 @@ module tb_adaptive_lre;
 
         $fclose(fd_out_decode);
         $fclose(fd_out_raw   );
+        $display("--------------------------------------------------");
+        $display("---------------    End Test        ---------------");
+        $display("--------------------------------------------------");
 
         $display("--------------------------------------------------");
         $display("---------------    Start Check     ---------------");
