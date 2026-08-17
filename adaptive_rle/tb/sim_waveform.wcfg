@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="tb_adaptive_rle_snapshot.wdb" id="1">
+         <top_modules>
+            <top_module name="tb_adaptive_rle" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0.000 ns"></ZoomStartTime>
+      <ZoomEndTime time="1,621.001 ns"></ZoomEndTime>
+      <Cursor1Time time="435.000 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="197"></NameColumnWidth>
+      <ValueColumnWidth column_width="98"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="15" />
+   <wvobject type="logic" fp_name="/tb_adaptive_rle/u_dut/i_last">
+      <obj_property name="ElementShortName">i_last</obj_property>
+      <obj_property name="ObjectShortName">i_last</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_adaptive_rle/u_dut/o_last">
+      <obj_property name="ElementShortName">o_last</obj_property>
+      <obj_property name="ObjectShortName">o_last</obj_property>
+   </wvobject>
+   <wvobject type="group" fp_name="group26">
+      <obj_property name="label">COMPARATOR</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="logic" fp_name="/tb_adaptive_rle/u_dut/u_comparator/i_clock">
+         <obj_property name="ElementShortName">i_clock</obj_property>
+         <obj_property name="ObjectShortName">i_clock</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_adaptive_rle/u_dut/u_comparator/i_data">
+         <obj_property name="ElementShortName">i_data[7:0]</obj_property>
+         <obj_property name="ObjectShortName">i_data[7:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_adaptive_rle/u_dut/u_comparator/i_valid">
+         <obj_property name="ElementShortName">i_valid</obj_property>
+         <obj_property name="ObjectShortName">i_valid</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_adaptive_rle/u_dut/u_comparator/i_last">
+         <obj_property name="ElementShortName">i_last</obj_property>
+         <obj_property name="ObjectShortName">i_last</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_adaptive_rle/u_dut/u_comparator/o_data">
+         <obj_property name="ElementShortName">o_data[7:0]</obj_property>
+         <obj_property name="ObjectShortName">o_data[7:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_adaptive_rle/u_dut/u_comparator/o_valid">
+         <obj_property name="ElementShortName">o_valid</obj_property>
+         <obj_property name="ObjectShortName">o_valid</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_adaptive_rle/u_dut/u_comparator/o_start">
+         <obj_property name="ElementShortName">o_start</obj_property>
+         <obj_property name="ObjectShortName">o_start</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_adaptive_rle/u_dut/u_comparator/o_mode">
+         <obj_property name="ElementShortName">o_mode</obj_property>
+         <obj_property name="ObjectShortName">o_mode</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_adaptive_rle/u_dut/u_comparator/o_last">
+         <obj_property name="ElementShortName">o_last</obj_property>
+         <obj_property name="ObjectShortName">o_last</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group16">
+      <obj_property name="label">COUNTER</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="array" fp_name="/tb_adaptive_rle/u_dut/u_counter/i_data">
+         <obj_property name="ElementShortName">i_data[7:0]</obj_property>
+         <obj_property name="ObjectShortName">i_data[7:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_adaptive_rle/u_dut/u_counter/i_valid">
+         <obj_property name="ElementShortName">i_valid</obj_property>
+         <obj_property name="ObjectShortName">i_valid</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_adaptive_rle/u_dut/u_counter/i_mode">
+         <obj_property name="ElementShortName">i_mode</obj_property>
+         <obj_property name="ObjectShortName">i_mode</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_adaptive_rle/u_dut/u_counter/i_start">
+         <obj_property name="ElementShortName">i_start</obj_property>
+         <obj_property name="ObjectShortName">i_start</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_adaptive_rle/u_dut/u_counter/i_last">
+         <obj_property name="ElementShortName">i_last</obj_property>
+         <obj_property name="ObjectShortName">i_last</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_adaptive_rle/u_dut/u_counter/o_data">
+         <obj_property name="ElementShortName">o_data[7:0]</obj_property>
+         <obj_property name="ObjectShortName">o_data[7:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_adaptive_rle/u_dut/u_counter/o_valid">
+         <obj_property name="ElementShortName">o_valid</obj_property>
+         <obj_property name="ObjectShortName">o_valid</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_adaptive_rle/u_dut/u_counter/o_marker">
+         <obj_property name="ElementShortName">o_marker[7:0]</obj_property>
+         <obj_property name="ObjectShortName">o_marker[7:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_adaptive_rle/u_dut/u_counter/o_marker_valid">
+         <obj_property name="ElementShortName">o_marker_valid</obj_property>
+         <obj_property name="ObjectShortName">o_marker_valid</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_adaptive_rle/u_dut/u_counter/i_clock">
+         <obj_property name="ElementShortName">i_clock</obj_property>
+         <obj_property name="ObjectShortName">i_clock</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group27">
+      <obj_property name="label">ENCODER</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="array" fp_name="/tb_adaptive_rle/u_dut/u_encoder/i_data">
+         <obj_property name="ElementShortName">i_data[7:0]</obj_property>
+         <obj_property name="ObjectShortName">i_data[7:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_adaptive_rle/u_dut/u_encoder/data_sel">
+         <obj_property name="ElementShortName">data_sel</obj_property>
+         <obj_property name="ObjectShortName">data_sel</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_adaptive_rle/u_dut/u_encoder/o_data">
+         <obj_property name="ElementShortName">o_data[7:0]</obj_property>
+         <obj_property name="ObjectShortName">o_data[7:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_adaptive_rle/u_dut/u_encoder/o_valid">
+         <obj_property name="ElementShortName">o_valid</obj_property>
+         <obj_property name="ObjectShortName">o_valid</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_adaptive_rle/u_dut/u_counter/o_marker_valid">
+         <obj_property name="ElementShortName">o_marker_valid</obj_property>
+         <obj_property name="ObjectShortName">o_marker_valid</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_adaptive_rle/u_dut/u_encoder/u_encoder_fsm/i_count_reach">
+         <obj_property name="ElementShortName">i_count_reach</obj_property>
+         <obj_property name="ObjectShortName">i_count_reach</obj_property>
+      </wvobject>
+      <wvobject type="group" fp_name="group51">
+         <obj_property name="label">FSM</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+         <wvobject type="logic" fp_name="/tb_adaptive_rle/u_dut/u_encoder/i_fifo_empty">
+            <obj_property name="ElementShortName">i_fifo_empty</obj_property>
+            <obj_property name="ObjectShortName">i_fifo_empty</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/tb_adaptive_rle/u_dut/u_encoder/u_encoder_fsm/state">
+            <obj_property name="ElementShortName">state[2:0]</obj_property>
+            <obj_property name="ObjectShortName">state[2:0]</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/tb_adaptive_rle/u_dut/u_counter/valid_sel">
+            <obj_property name="ElementShortName">valid_sel</obj_property>
+            <obj_property name="ObjectShortName">valid_sel</obj_property>
+         </wvobject>
+      </wvobject>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_adaptive_rle/u_dut/u_comparator/i_valid">
+      <obj_property name="ElementShortName">i_valid</obj_property>
+      <obj_property name="ObjectShortName">i_valid</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_adaptive_rle/u_dut/u_comparator/i_data">
+      <obj_property name="ElementShortName">i_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">i_data[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_adaptive_rle/u_dut/u_comparator/ref_data">
+      <obj_property name="ElementShortName">ref_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">ref_data[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_adaptive_rle/u_dut/u_comparator/ref_data_d">
+      <obj_property name="ElementShortName">ref_data_d[7:0]</obj_property>
+      <obj_property name="ObjectShortName">ref_data_d[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_adaptive_rle/u_dut/u_comparator/mode">
+      <obj_property name="ElementShortName">mode</obj_property>
+      <obj_property name="ObjectShortName">mode</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_adaptive_rle/u_dut/u_comparator/start">
+      <obj_property name="ElementShortName">start</obj_property>
+      <obj_property name="ObjectShortName">start</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_adaptive_rle/u_dut/u_comparator/start_d">
+      <obj_property name="ElementShortName">start_d</obj_property>
+      <obj_property name="ObjectShortName">start_d</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_adaptive_rle/u_dut/u_comparator/o_start">
+      <obj_property name="ElementShortName">o_start</obj_property>
+      <obj_property name="ObjectShortName">o_start</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_adaptive_rle/u_dut/u_comparator/match_prev">
+      <obj_property name="ElementShortName">match_prev</obj_property>
+      <obj_property name="ObjectShortName">match_prev</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_adaptive_rle/u_dut/u_comparator/match_next">
+      <obj_property name="ElementShortName">match_next</obj_property>
+      <obj_property name="ObjectShortName">match_next</obj_property>
+   </wvobject>
+</wave_config>
