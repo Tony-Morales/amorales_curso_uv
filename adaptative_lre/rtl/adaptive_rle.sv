@@ -26,7 +26,8 @@ module adaptive_rle #(
 );
 
 
-    localparam NB_FIFO_POINTER = NB_COUNT -1;
+    localparam NB_FIFO_POINTER_DATA    = NB_COUNT -1;
+    localparam NB_FIFO_POINTER_COUNTER = 5;
 
     // Comparator
     wire [NB_DATA -1:0] comp_data           ;
@@ -99,7 +100,7 @@ module adaptive_rle #(
     adaptive_rle_fifo 
     #                          (
         .NB_DATA               (NB_DATA                  ),
-        .NB_POINTER            (NB_FIFO_POINTER          )
+        .NB_POINTER            (NB_FIFO_POINTER_DATA     )
     )
     u_fifo_data (
         .o_rd_data             (fifo_data                ),
@@ -117,7 +118,7 @@ module adaptive_rle #(
     adaptive_rle_fifo 
     #(
         .NB_DATA               (NB_COUNT                 ),
-        .NB_POINTER            (NB_FIFO_POINTER -2       )
+        .NB_POINTER            (NB_FIFO_POINTER_COUNTER  )
     )
     u_fifo_marker (
         .o_rd_data             (fifo_marker              ),
