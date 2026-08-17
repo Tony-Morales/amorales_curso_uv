@@ -13,7 +13,7 @@ read_hdl adaptive_rle_encoder.sv  -sv
 read_hdl adaptive_rle_fifo.sv  -sv
 read_hdl adaptive_rle.sv -sv
 
-
+set_db hdl_max_memory_address_range 100000
 # Sintetiza a rtl basico:
 elaborate 
 
