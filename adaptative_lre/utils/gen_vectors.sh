@@ -28,8 +28,5 @@ python3 gen_overflow_vector.py  32 16
 python3 gen_img_vector.py hand_rx.jpg
 python3 gen_img_vector.py hand_rx.jpg true
 
-python3 gen_img_vector.py hand_rx_2.jpg
-python3 gen_img_vector.py hand_rx_2.jpg true
-
 python3 gen_img_vector.py knee_rx.jpg
 python3 gen_img_vector.py knee_rx.jpg true
